@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Management</title>
+    <style>
+         .button-container {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .button-container a {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .button-container a:hover {
+            background-color: #45a049;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin-top: 24px;
+        }
+
+        #user-list {
+            margin-bottom: 20px;
+        }
+
+        #add-user {
+            margin-top: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 300px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <a href="/index">Go to Home</a>
+    </div>
+    <h1>User Management</h1>
+    <div id="user-list">
+     
+        <table id="users-table">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Username</th>
+                    <th>Contact Number</th>
+                </tr>
+            </thead>
+            <tbody id="users-body"></tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // Function to get all users from the database
+            function getUsers() {
+                $.get("/users", function(data){
+                    $('#users-body').empty();
+                    data = JSON.parse(data);
+                    if(data.length > 0){
+                        data.forEach(function(user){
+                            $('#users-body').append(`<tr>
+                                                        <td>${user.firstname}</td>
+                                                        <td>${user.lastname}</td>
+                                                        <td>${user.username}</td>
+                                                        <td>${user.contactno}</td>
+                                                    </tr>`);
+                        });
+                    } else {
+                        $('#users-body').append(`<tr><td colspan="4">No users found</td></tr>`);
+                    }
+                });
+            }
+    
+            // Call the function to get all users
+            getUsers();
+    
+          
+        });
+    </script>
+    
+</body>
+</html>

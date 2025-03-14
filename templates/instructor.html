@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Management</title>
+    <style>
+         .button-container {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .button-container a {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .button-container a:hover {
+            background-color: #45a049;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin-top: 24px;
+        }
+
+        #user-list {
+            margin-bottom: 20px;
+        }
+
+        #add-user {
+            margin-top: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 300px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <a href="/index">Go to Home</a>
+    </div>
+    <h1>Instructor Management</h1>
+    <div id="user-list">
+        <h2>Instructor</h2>
+        <table id="instructor-table">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Username</th>
+                    <th>courses</th>
+                </tr>
+            </thead>
+            <tbody id="instructor-body"></tbody>
+        </table>
+    </div>
+
+    <div id="add-instructor">
+        <h2>Add instructor</h2>
+        <form id="instructor-form">
+            <label for="firstname">First Name:</label><br>
+            <input type="text" id="firstname" name="firstname"><br>
+            <label for="lastname">Last Name:</label><br>
+            <input type="text" id="lastname" name="lastname"><br>
+            <label for="email">Username:</label><br>
+            <input type="text" id="email" name="email"><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password"><br>
+            <label for="courses">Courses:</label><br>
+            <input type="text" id="courses" name="courses"><br>
+            <button type="submit">Add Instructor</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // Function to get all users from the database
+            function getInstructor() {
+                $.get("/instructors", function(data){
+                    $('#instructor-body').empty();
+                    data = JSON.parse(data);
+                    if(data.length > 0){
+                        data.forEach(function(instructor){
+                            $('#instructor-body').append(`<tr>
+                                                        <td>${instructor.firstname}</td>
+                                                        <td>${instructor.lastname}</td>
+                                                        <td>${instructor.email}</td>
+                                                        <td>${instructor.courses}</td>
+                                                    </tr>`);
+                        });
+                    } else {
+                        $('#instructor-body').append(`<tr><td colspan="4">No Instructors found</td></tr>`);
+                    }
+                });
+            }
+    
+            // Call the function to get all users
+            getInstructor();
+    
+            // Function to add a new user
+            $('#instructor-form').submit(function(e){
+                e.preventDefault();
+                var instructor = {
+                    firstname: $('#firstname').val(),
+                    lastname: $('#lastname').val(),
+                    email: $('#email').val(),
+                    password: $('#password').val(),
+                    courses: $('#courses').val()
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/instructors",
+                    contentType: "application/json",
+                    data: JSON.stringify(instructor),
+                    success: function(){
+                        getInstructor();
+                        $('#instructor-form')[0].reset(); // Reset form fields
+                    }
+                });
+            });
+        });
+    </script>
+    
+    
+</body>
+</html>

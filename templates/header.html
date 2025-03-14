@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrolled Courses</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+   <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo h1 {
+            margin: 0;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-left: 10px;
+            position: relative;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .search input {
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .enrolled button {
+            padding: 8px 15px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            top: 100%;
+            left: 0;
+        }
+
+        .dropdown-menu a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #ddd;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .course-card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .course-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .course-card h2 {
+            margin-top: 0;
+        }
+
+        .course-card p {
+            margin: 5px 0;
+        }
+
+        .video-url {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .user-icon {
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+    <div class="logo">
+        <h1>LearnHub</h1>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="/home">Home</a></li>
+            <li class="dropdown">
+                <a href="#">Categories</a>
+                <div class="dropdown-menu">
+                    <a href="/courses/computersceince">Computer Science</a>
+                    <a href="/courses/health">Health</a>
+                    <a href="/courses/business">Business</a>
+                    <a href="/courses/PersonalDevelopment">Personal Development</a>
+                    <a href="/courses/Marketing">Marketing</a>
+                    <a href="/courses/lifestyle">Lifestyle</a>
+                    <a href="/courses/music">Music</a>
+                    <a href="/courses/photography">Photography&Video</a>
+                </div>
+            </li>
+            <li><a href="/courses">Courses</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </nav>
+   
+    <div class="enrolled">
+        <a href="/enrolled" ><button>Enrolled Courses</button></a>
+    </div>
+    <i class="bi bi-person user-icon" onclick="showUserProfile()"></i>
+</header>
+
+<!-- Main Content -->
+
+<main id="courses-container">
+    <!-- Enrolled courses will be displayed here -->
+</main>
+
+<script>
+    // Function to handle dropdown toggle
+    document.addEventListener("DOMContentLoaded", function() {
+        var dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach(function(dropdown) {
+            dropdown.addEventListener('click', function(event) {
+                event.stopPropagation();
+                var menu = this.querySelector('.dropdown-menu');
+                menu.classList.toggle('show');
+            });
+        });
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropdown')) {
+                var dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    });
+
+    function getEnrolledCourses() {
+        fetch('/enrolled_courses', {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Enrolled Courses:', data);
+            displayEnrolledCourses(data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+    // function displayEnrolledCourses(courses) {
+    //     var coursesContainer = document.getElementById('courses-container');
+    //     coursesContainer.innerHTML = '';
+
+    //     courses.forEach(course => {
+    //         var courseCard = `
+    //             <div class="course-card">
+    //                 <h2>${course.title}</h2>
+    //                 <p><strong>Description:</strong> ${course.description}</p>
+    //                 <p><strong>Instructor:</strong> ${course.instructor}</p>
+    //                 <p><strong>Video URL:</strong> <a class="video-url" href="${course.video_url}" target="_blank">${course.video_url}</a></p>
+    //             </div>
+    //         `;
+    //         coursesContainer.insertAdjacentHTML('beforeend', courseCard);
+    //     });
+    // }
+    function showUserProfile() {
+        window.location.href = "/profile";
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,503 @@
+{% include 'header.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-ZBpdw4b57Pt8jDmKqk71t2cgghuxS//eNN4RkyhwhiJfxJ8t7TYJEY9rvNzVmY7Izvv9CBrSD9yG3H5heuy1WQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+   
+    <title>Enrolled Courses</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo h1 {
+            margin: 0;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-left: 20px;
+            position: relative;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .search input {
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .enrolled button {
+            padding: 8px 15px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            top: 100%;
+            left: 0;
+        }
+
+        .dropdown-menu a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #ddd;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .course-card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .course-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .course-card h2 {
+            margin-top: 0;
+        }
+
+        .course-card p {
+            margin: 5px 0;
+        }
+
+        .video-url {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .quiz-question {
+            margin-top: 10px;
+        }
+
+        /* New style for the file upload modal */
+        .file-upload-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .file-upload-modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+        }
+
+        .file-upload-modal-content input[type="file"] {
+            margin-top: 10px;
+        }
+
+        .file-preview {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Main Content -->
+
+<main id="courses-container">
+    <!-- Enrolled courses will be displayed here -->
+</main>
+
+<!-- Quiz Modal -->
+<div id="quiz-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeQuizModal()">&times;</span>
+        <div id="quiz-questions"></div>
+        <button onclick="submitQuiz()">Submit Quiz</button>
+    </div>
+</div>
+
+<!-- File Upload Modal -->
+<div id="file-upload-modal" class="file-upload-modal">
+    <div class="file-upload-modal-content">
+        <span class="close" onclick="closeFileUploadModal()">&times;</span>
+        <h2 id="assignment-title"></h2>
+        <p id="assignment-description"></p>
+        <p id="assignment-due-date"></p>
+        <form id="file-upload-form">
+            <input type="file" id="assignment-file" name="assignment-file" accept=".zip,.pdf,.doc" onchange="previewSelectedFile()">
+            <div class="file-preview" id="file-preview"></div>
+            <br>
+            <button type="submit" onclick="uploadAssignment(event)">Upload</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function getEnrolledCourses() {
+        fetch('/enrolled_courses', {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Enrolled Courses:', data);
+            displayEnrolledCourses(data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+    function displayEnrolledCourses(courses) {
+        var coursesContainer = document.getElementById('courses-container');
+        coursesContainer.innerHTML = '';
+
+        courses.forEach(course => {
+            var courseCard = `
+                <div class="course-card" id="course-${course.id}">
+                    <h2>${course.title}</h2>
+                    <p><strong>Description:</strong> ${course.description}</p>
+                    <p><strong>Instructor:</strong> ${course.instructor}</p>
+                    <p><strong>Video URL:</strong> <a class="video-url" href="${course.video_url}" target="_blank">${course.video_url}</a></p>
+                    <input type="checkbox" id="done-${course.id}" onchange="toggleQuizAssignment(${course.id})"> <label for="done-${course.id}">Done with course !</label>
+                    <div class="quiz-assignment" id="quiz-assignment-${course.id}" style="display: none;">
+                        <label for="quiz-${course.id}">Quiz:</label>
+                        <a href="#" id="quiz-${course.id}" onclick="fetchQuiz(${course.id})">Start Quiz</a>
+                        <br>
+                        <label for="assignment-${course.id}">Assignment:</label>
+                        <a href="#" id="assignment-${course.id}" onclick="openFileUploadModal(${course.id})">View Assignment</a>
+                    </div>
+                </div>
+            `;
+            coursesContainer.insertAdjacentHTML('beforeend', courseCard);
+        });
+    }
+
+    function toggleQuizAssignment(courseId) {
+        var doneCheckbox = document.getElementById(`done-${courseId}`);
+        var quizAssignmentDiv = document.getElementById(`quiz-assignment-${courseId}`);
+        if (doneCheckbox.checked) {
+            quizAssignmentDiv.style.display = 'block';
+        } else {
+            quizAssignmentDiv.style.display = 'none';
+        }
+    }
+
+    function fetchQuiz(courseId) {
+        fetch(`/quiz/${courseId}`, {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Quiz Questions:', data);
+            displayQuiz(data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+    function displayQuiz(questions) {
+        var quizQuestionsDiv = document.getElementById('quiz-questions');
+        quizQuestionsDiv.innerHTML = '';
+
+        questions.forEach((question, index) => {
+            var questionHTML = `
+                <div class="quiz-question">
+                    <p>${index + 1}. ${question.question}</p>
+                    <input type="radio" id="option${index + 1}1" name="question${index + 1}" value="${question.option1}">
+                    <label for="option${index + 1}1">${question.option1}</label><br>
+                    <input type="radio" id="option${index + 1}2" name="question${index + 1}" value="${question.option2}">
+                    <label for="option${index + 1}2">${question.option2}</label><br>
+                    <input type="radio" id="option${index + 1}3" name="question${index + 1}" value="${question.option3}">
+                    <label for="option${index + 1}3">${question.option3}</label><br>
+                    <input type="radio" id="option${index + 1}4" name="question${index + 1}" value="${question.option4}">
+                    <label for="option${index + 1}4">${question.option4}</label>
+                    <input type="hidden" id="correct_option${index + 1}" value="${question.correct_option}">
+                </div>
+            `;
+            quizQuestionsDiv.insertAdjacentHTML('beforeend', questionHTML);
+        });
+
+        var quizModal = document.getElementById('quiz-modal');
+        quizModal.style.display = 'block';
+    }
+
+    function submitQuiz() {
+        var questions = document.querySelectorAll('.quiz-question');
+        var correctAnswers = 0;
+
+        questions.forEach((question, index) => {
+            var selectedOption = question.querySelector('input[type="radio"]:checked');
+            var correctOption = question.querySelector(`#correct_option${index + 1}`);
+            if (selectedOption && selectedOption.value === correctOption.value) {
+                correctAnswers++;
+            }
+        });
+
+        var grade = (correctAnswers / questions.length) * 100;
+        alert(`You got ${grade}%`);
+        closeQuizModal();
+    }
+
+    function closeQuizModal() {
+        var quizModal = document.getElementById('quiz-modal');
+        quizModal.style.display = 'none';
+    }
+
+    function openFileUploadModal(courseId) {
+        fetchAssignment(courseId);
+        var fileUploadModal = document.getElementById('file-upload-modal');
+        fileUploadModal.style.display = 'block';
+        document.getElementById('file-upload-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            uploadAssignment(courseId);
+            document.getElementById('file-upload-form').reset(); // Clear the file input field
+        });
+    }
+
+    function closeFileUploadModal() {
+        var fileUploadModal = document.getElementById('file-upload-modal');
+        fileUploadModal.style.display = 'none';
+    }
+
+    function uploadAssignment(courseId) {
+        var fileInput = document.getElementById('assignment-file');
+        var formData = new FormData();
+        formData.append('assignment', fileInput.files[0]);
+
+        fetch(`/assignment/${courseId}/upload`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Upload Status:', data);
+            if (data.message) {
+                alert(data.message);
+                var grade = calculateQuizGrade();
+                if (grade >= 75) {
+                    var courseTitle = document.querySelector(`#course-${courseId} h2`).innerText;
+                    addGradeToUser(courseId, grade, courseTitle);
+                }
+            } else {
+                alert('Assignment upload failed');
+            }
+            closeFileUploadModal();
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+    function calculateQuizGrade() {
+        var questions = document.querySelectorAll('.quiz-question');
+        var correctAnswers = 0;
+
+        questions.forEach((question, index) => {
+            var selectedOption = question.querySelector('input[type="radio"]:checked');
+            var correctOption = question.querySelector(`#correct_option${index + 1}`);
+            if (selectedOption && selectedOption.value === correctOption.value) {
+                correctAnswers++;
+            }
+        });
+
+        var grade = (correctAnswers / questions.length) * 100;
+        return grade;
+    }
+
+    function addGradeToUser(courseId, grade, courseTitle) {
+        fetch(`/user/add_grade`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                course_id: courseId,
+                grade: grade,
+                course_title: courseTitle
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Grade added to user:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+    function fetchAssignment(courseId) {
+        fetch(`/assignment/${courseId}`, {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Assignment:', data);
+            document.getElementById('assignment-title').innerText = data.title;
+            document.getElementById('assignment-description').innerText = data.description;
+            document.getElementById('assignment-due-date').innerText = `Due Date: ${data.due_date}`;
+            previewFile(data.file_url);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+    function previewFile(fileUrl) {
+        var filePreviewDiv = document.getElementById('file-preview');
+        filePreviewDiv.innerHTML = '';
+        if (fileUrl) {
+            var fileType = fileUrl.split('.').pop();
+            var filePreviewContent = '';
+            if (fileType === 'pdf') {
+                filePreviewContent = `<embed src="${fileUrl}" type="application/pdf" width="100%" height="600px"/>`;
+            } else if (fileType === 'doc') {
+                filePreviewContent = `<iframe src="https://view.officeapps.live.com/op/view.aspx?src=${fileUrl}" style="width:100%; height:600px;" frameborder="0"></iframe>`;
+            } else if (fileType === 'zip') {
+                filePreviewContent = `<p>Zip file uploaded</p>`;
+            } else {
+                filePreviewContent = `<p>File type not supported for preview</p>`;
+            }
+            filePreviewDiv.innerHTML = filePreviewContent;
+        }
+    }
+
+    function previewSelectedFile() {
+        var fileInput = document.getElementById('assignment-file');
+        var file = fileInput.files[0];
+        var fileType = file.name.split('.').pop();
+        var filePreviewDiv = document.getElementById('file-preview');
+        var filePreviewContent = '';
+
+        if (fileType === 'pdf') {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                filePreviewContent = `<embed src="${e.target.result}" type="application/pdf" width="100%" height="600px"/>`;
+                filePreviewDiv.innerHTML = filePreviewContent;
+            };
+            reader.readAsDataURL(file);
+        } else if (fileType === 'doc') {
+            filePreviewContent = `<p>Document file uploaded. Preview is not available for .doc files.</p>`;
+            filePreviewDiv.innerHTML = filePreviewContent;
+        } else if (fileType === 'zip') {
+            filePreviewContent = `<p>Zip file uploaded. Preview is not available for .zip files.</p>`;
+            filePreviewDiv.innerHTML = filePreviewContent;
+        } else {
+            filePreviewContent = `<p>File type not supported for preview</p>`;
+            filePreviewDiv.innerHTML = filePreviewContent;
+        }
+    }
+
+    getEnrolledCourses();
+</script>
+
+</body>
+</html>

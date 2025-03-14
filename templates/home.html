@@ -1,0 +1,338 @@
+{% include 'header.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-ZBpdw4b57Pt8jDmKqk71t2cgghuxS//eNN4RkyhwhiJfxJ8t7TYJEY9rvNzVmY7Izvv9CBrSD9yG3H5heuy1WQ==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+   
+    <title>Courses</title>
+    <style>
+        /* CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo h1 {
+            margin: 0;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .search input {
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 34%; /* Increased width */
+        }
+
+        .search button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .enrolled button {
+            padding: 8px 15px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .courses-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-gap: 20px;
+            padding: 10px;
+            justify-content: space-between;
+        }
+
+        .course-card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        }
+
+        .course-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .course-card h2 {
+            margin-top: 0;
+        }
+
+        .course-card p {
+            margin: 5px 0;
+        }
+
+        .video-url {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .enroll-btn {
+            padding: 8px 15px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .checkout-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .payment-methods {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .card img {
+            height: 40px;
+            margin-bottom: 10px;
+        }
+
+        .proceed-btn {
+            padding: 10px 20px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    
+
+    <main>
+        <div class="search" style="    text-align: center;
+        margin-top: -42px;
+        margin-bottom: 11px;">
+            <input type="text" id="searchInput" placeholder="Search..." oninput="searchCourses()">
+        </div>
+        <div class="courses-container">
+            <!-- Courses will be dynamically added here -->
+            {% for course in courses %}
+            <div class="course-card">
+                <!-- <img src="/static/images/{{ course.image }}" alt="{{ course.title }}"> -->
+                <h2>{{ course.title }}</h2>
+                <p><strong>Instructor:</strong> {{ course.instructor }}</p>
+                <p><strong>Description:</strong> {{ course.description }}</p>
+                <p><strong>Price:</strong> {{ course.price }}</p>
+                <p><strong>Start Date:</strong> {{ course.start_date }}</p>
+                <p><strong>End Date:</strong> {{ course.end_date }}</p>
+                <!-- <p><strong>Status:</strong> {{ course.status }}</p> -->
+                <button class="enroll-btn" onclick="openModal('{{ course.course_id }}','{{ course.instructor }}','{{ course.title }}', '{{ course.description }}', '{{ course.video_url }}', '{{ course.price }}', '{{ username }}')">Enroll</button>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="checkout-title">Payment Methods</div>
+            <p>Logged in as: <span id="username"></span></p> <!-- Add this line -->
+            <div class="card">
+                <div class="card-body">
+                    <div id="payment-form">
+                        <label for="visa-card-number">Card Number:</label>
+                        <input type="text" id="visa-card-number" placeholder="Visa Card Number"><br><br>
+                        <label for="visa-expiration">Expiration:</label>
+                        <input type="month" id="visa-expiration" placeholder="MM / YY" onchange="formatExpiration()"><br><br>
+                        <label for="visa-cvc">CVC:</label>
+                        <input type="text" id="visa-cvc" placeholder="Visa CVC"><br><br>
+                        <label for="course-price">Price:</label>
+                        <input type="text" id="course-price" value="" disabled><br><br>
+                        <button class="proceed-btn" onclick="enrollCourse('visa')">Proceed</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        var courseId,courseInstructor, courseTitle, courseDescription, courseVideoUrl, coursePrice;
+
+        function openModal(id,instructor, title, description, videoUrl, price, username) {
+            courseId = id;
+            courseTitle = title;
+            courseInstructor=instructor;
+            courseDescription = description;
+            courseVideoUrl = videoUrl;
+            coursePrice = price;
+            var modal = document.getElementById("myModal");
+            modal.style.display = "block";
+            document.getElementById("course-price").value = coursePrice;
+            document.getElementById("username").innerText = username;
+        }
+
+        function closeModal() {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+            clearFields(); // Clear input fields
+        }
+
+        function clearFields() {
+            document.getElementById("visa-card-number").value = "";
+            document.getElementById("visa-expiration").value = "";
+            document.getElementById("visa-cvc").value = "";
+        }
+
+        function formatExpiration() {
+            var input = document.getElementById("visa-expiration");
+            var year = input.value.split("-")[0];
+            var month = input.value.split("-")[1];
+            // document.getElementById("visa-expiration").value = month + "/" + year.slice(2);
+        }
+
+        function enrollCourse() {
+            var cardNumber = document.getElementById("visa-card-number").value;
+            var expiration = document.getElementById("visa-expiration").value;
+            var cvc = document.getElementById("visa-cvc").value;
+            
+            fetch('/enroll', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: courseId,
+                    title: courseTitle,
+                    instructor:courseInstructor,
+                    description: courseDescription,
+                    video_url: courseVideoUrl,
+                    price: coursePrice,
+                    card_number: cardNumber,
+                    expiration: expiration,
+                    cvc: cvc
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                alert('Course enrolled successfully!');
+                closeModal();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('There was an error enrolling in the course. Please try again later.');
+            });
+        }
+
+        function searchCourses() {
+            var input, filter, cards, card, title, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            cards = document.getElementsByClassName("course-card");
+            for (i = 0; i < cards.length; i++) {
+                card = cards[i];
+                title = card.getElementsByTagName("h2")[0];
+                txtValue = title.textContent || title.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>

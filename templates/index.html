@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      margin-bottom: 10px;
+      margin-top: 24px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      margin: 20px;
+      width: 300px;
+      text-align: center;
+    }
+
+    .card h2 {
+      margin: 0;
+      padding: 0;
+    }
+
+    .card p {
+      margin-top: 20px;
+    }
+
+    .card a {
+      text-decoration: none;
+      color: #333;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      transform: translateY(-5px);
+    }
+    .button-container {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .button-container a {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .button-container a:hover {
+            background-color: #45a049;
+        }
+  </style>
+</head>
+<body>
+    <div class="button-container">
+        <a href="/">Signout</a>
+    </div>
+  <div class="container">
+    <div class="card">
+      <h2><a href="/all_courses">Courses</a></h2>
+      <p>Click <a href="/all_courses">here</a> to view or edit all the courses.</p>
+    </div>
+    <div class="card">
+      <h2><a href="/admin_user">Users</a></h2>
+      <p>Click <a href="/admin_user">here</a> to view all users.</p>
+    </div>
+    <div class="card">
+      <h2><a href="/enrollment">Enrollment</a></h2>
+      <p>Click <a href="/enrollment">here</a> to view enrolled users.</p>
+    </div>
+    <div class="card">
+        <h2><a href="/admin_instructor">Instructors</a></h2>
+        <p>Click <a href="/admin_instructor">here</a> to view  Instructors.</p>
+      </div>
+  </div>
+
+  <div id="courses" style="display: none;">
+    <h1>Courses Page</h1>
+    <!-- Your courses content here -->
+  </div>
+
+  <div id="users" style="display: none;">
+    <h1>Users Page</h1>
+    <!-- Your users content here -->
+  </div>
+
+  <div id="enrollment" style="display: none;">
+    <h1>Enrollment Page</h1>
+    <!-- Your enrollment content here -->
+  </div>
+
+  <script>
+    // Smooth scrolling for the links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+  </script>
+</body>
+</html>

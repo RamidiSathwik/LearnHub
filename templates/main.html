@@ -1,0 +1,61 @@
+{% include 'header.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contents</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-ZBpdw4b57Pt8jDmKqk71t2cgghuxS//eNN4RkyhwhiJfxJ8t7TYJEY9rvNzVmY7Izvv9CBrSD9yG3H5heuy1WQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+   
+  <style>
+    .content-card {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 20px;
+      margin-bottom: 20px;
+      width: 300px;
+    }
+    .content-card h2 {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .content-card h2 i {
+      margin-right: 10px;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+   
+<div class="row">
+  <div class="content-card">
+    <h2><i class="fas fa-hands-helping"></i> Hands-on training</h2>
+    <p>Upskill effectively with AI-powered coding exercises, practice tests, skills assessments, labs, and workspaces</p>
+  </div>
+
+  <div class="content-card">
+    <h2><i class="fas fa-certificate"></i> Certification prep</h2>
+    <p>Prep for industry-recognized certifications by solving real-world challenges and earn badges along the way.</p>
+  </div>
+
+
+  <div class="content-card">
+    <h2><i class="fas fa-chart-line"></i> Insights and analytics</h2>
+    <p>Fast-track goals with advanced insights plus a dedicated customer success team to help drive effective learning.</p>
+    <p>Enterprise Plan</p>
+  </div>
+
+  <div class="content-card">
+    <h2><i class="fas fa-cogs"></i> Customizable content</h2>
+    <p>Create tailored learning paths for team and organization goals and even host your own content and resources.</p>
+  </div>
+</div>
+<img src="/static/grow.jpg" alt="Grow" style="width: 100%;">
+</body>
+</html>
